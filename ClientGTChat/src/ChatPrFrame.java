@@ -86,7 +86,7 @@ public class ChatPrFrame extends JFrame {
 	      				}
                 	  
                 	  tSocket.stop();
-                	  if(tTopic.isAlive())
+                	  if(tTopic!=null)
                 		  tTopic.stop();
                 	  dispose();
                       loginframe.setVisible(true);    
