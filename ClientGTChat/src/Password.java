@@ -18,8 +18,7 @@ public class Password extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	
+		
 	private JPanel contentPane = new JPanel();
 	private JLabel lblAdminpassword = new JLabel("AdminPassWord ");
 	private JPasswordField passwordField = new JPasswordField();

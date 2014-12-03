@@ -25,6 +25,7 @@ public class ChatPriveFrame extends JFrame {
 	private JTextArea textClient = new JTextArea();
     private JTextArea textPrive = new JTextArea();
     
+    
 	/**
 	 * Create the frame.
 	 */

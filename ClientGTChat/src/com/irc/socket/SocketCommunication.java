@@ -9,6 +9,7 @@ public class SocketCommunication {
 	// fonction qui envoie la liste des users connectés
 		public void sendMessage(SocketMessage message, DataOutputStream streamOut) throws IOException
 		{
+			
 			String parseur=">";
 			streamOut.writeUTF(message.getMessageType()+parseur+message.getNicknameDestinataire()+parseur+message.getNicknameExpediteur()+parseur+message.getMessageContent()); // TODO : A mettre dans un fichier properties
 			streamOut.flush();

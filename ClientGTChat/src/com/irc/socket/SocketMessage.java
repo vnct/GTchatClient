@@ -13,6 +13,7 @@ public class SocketMessage {
 		this.messageType = messageType;
 	}
 	
+	
 	public SocketMessageType getMessageType() {
 		return messageType;
 	}

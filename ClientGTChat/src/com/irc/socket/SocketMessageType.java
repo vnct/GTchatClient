@@ -16,6 +16,7 @@ public enum SocketMessageType {
 	 	INFO_ADMIN_ERROR("INFO_ADMIN_ERROR"),
 	 	INFO_SUCCESS("INFO_SUCCESS")
 	    ;
+	 	
 
 	    private final String text;
 

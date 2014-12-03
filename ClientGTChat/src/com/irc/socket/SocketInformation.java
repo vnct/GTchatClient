@@ -14,6 +14,7 @@ public class SocketInformation {
 	private String url;
 	
 	
+	
 	public SocketInformation(Socket _socket,String _url) {
 		super();
 		this.socket = _socket;

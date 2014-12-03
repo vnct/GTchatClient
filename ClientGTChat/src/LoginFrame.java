@@ -106,6 +106,7 @@ public class LoginFrame extends JFrame {
 		//textPort.setText("80");
 		topport.add(textPort);
 		
+		
 		contentPane.add(topport);
 		
 		// Creation de la partie Nickname

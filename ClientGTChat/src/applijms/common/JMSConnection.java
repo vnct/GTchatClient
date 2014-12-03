@@ -22,6 +22,7 @@ public class JMSConnection implements ExceptionListener{
 		return topic;
 	}
 
+	
 	public JMSConnection(String brokerUrl) throws JMSException {
 		super();
 	

@@ -121,6 +121,7 @@ public class SampleHelloWorld {
 //                e.printStackTrace();
 //            }
 //        }
+	
 // 
 //        public synchronized void onException(JMSException ex) {
 //            System.out.println("JMS Exception occured.  Shutting down client.");

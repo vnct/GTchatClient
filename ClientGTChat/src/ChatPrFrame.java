@@ -100,8 +100,7 @@ public class ChatPrFrame extends JFrame {
 		
 		
 		contentPane.setLayout(null);
-		
-		
+				
 		this.getRootPane().setDefaultButton(btnSend);
 		
 		

@@ -18,7 +18,6 @@ public class ReceiveInformation extends Thread {
 	private JMSMessageConsumer messageConsumer;
 	
 
-
 	public ReceiveInformation(JTextArea textAll,String brokerUrl) throws JMSException {
 		String jmsAddress = "tcp://"+brokerUrl+":61616";
 		messageConsumer = new JMSMessageConsumer(jmsAddress, "TOPIC.TOPIC");

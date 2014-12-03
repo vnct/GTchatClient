@@ -24,7 +24,6 @@ public class ReceiveThread extends Thread {
 		this.chatBox = textAll;
 	}
 
-
 	@Override
 	public void run() {
 

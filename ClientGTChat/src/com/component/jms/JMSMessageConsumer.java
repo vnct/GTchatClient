@@ -15,6 +15,7 @@ public class JMSMessageConsumer extends JMSConnection {
 		createTopic(nickname);
 		this.connection.setExceptionListener(this);
 		this.consumer = session.createConsumer(getTopic());
+		
 	}
 	public TextMessage receiveMessage() throws JMSException
 	{

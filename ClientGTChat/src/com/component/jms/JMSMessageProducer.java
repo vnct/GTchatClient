@@ -17,6 +17,7 @@ public class JMSMessageProducer extends JMSConnection {
 		 producer.setPriority(1);
          producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
+         
 
 	}
 	public void sendMessage(Message msg) throws JMSException
