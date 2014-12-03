@@ -153,7 +153,7 @@ public class LoginFrame extends JFrame {
 							System.out.println(message.getMessageContent());
 							switch (message.getMessageType()) {
 							case INFO_PSEUDO:
-								communication.sendMessage(new SocketMessage("Serveur", nickname, nickname, SocketMessageType.INFO_PSEUDO), socketInformation.getStreamOut());
+								communication.sendMessage(new SocketMessage(true,"Serveur", nickname, nickname, SocketMessageType.INFO_PSEUDO), socketInformation.getStreamOut());
 								break;
 							case INFO_PSEUDO_EXIST:
 								pseudo_available = false;

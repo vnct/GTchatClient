@@ -54,6 +54,9 @@ public class ChatPrFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	
+	
+	
 	public ChatPrFrame(final LoginFrame loginframe,SocketInformation _socketInformation) {
 		socketInformation = _socketInformation;
 		this.setTitle("GTChat");
@@ -75,19 +78,7 @@ public class ChatPrFrame extends JFrame {
                                        JOptionPane.YES_NO_OPTION,
                                        JOptionPane.QUESTION_MESSAGE);
                   if (reponse==JOptionPane.YES_OPTION){
-                	  SocketMessage socketMessage = new SocketMessage("SERVEUR", "Disconnect", loginframe.getNameUser(), SocketMessageType.MESSAGE_QUIT);
-                	  SocketCommunication socketCommunication = new SocketCommunication();
-                	  try {
-	      					socketCommunication.sendMessage(socketMessage, socketInformation.getStreamOut());
-	      					socketInformation.stop();
-	      				} catch (IOException ex) {
-	      					// TODO Auto-generated catch block
-	      					ex.printStackTrace();
-	      				}
-                	  
-                	  tSocket.stop();
-                	  if(tTopic!=null)
-                		  tTopic.stop();
+                	  closeConnection();
                 	  dispose();
                       loginframe.setVisible(true);    
                   }
@@ -108,11 +99,21 @@ public class ChatPrFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				String msgToSend = send().replace(">", "").trim();
-				textAll.append(loginframe.getNameUser() + " > " + msgToSend+ "\n");
-				
 				SocketCommunication socketCommunication = new SocketCommunication();
-				SocketMessage socketMessage = new SocketMessage("***", msgToSend, loginframe.getNameUser(), SocketMessageType.MESSAGE_TEXT);
+				SocketMessage socketMessage = null;
+				SocketMessageType type = SocketMessageType.MESSAGE_TEXT;
+				if(msgToSend.contains("!kick"))
+				{
+					type = SocketMessageType.USER_KICK;
+				}
+				else
+				{
+					textAll.append(loginframe.getNameUser() + " > " + msgToSend+ "\n");
+					
+					
+				}
 				try {
+					socketMessage = new SocketMessage(false,"***", msgToSend, loginframe.getNameUser(), type);
 					socketCommunication.sendMessage(socketMessage, socketInformation.getStreamOut());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -152,7 +153,7 @@ public class ChatPrFrame extends JFrame {
 		
 		
 		
-		tSocket = new ReceiveThread(textAll,_socketInformation) ;
+		tSocket = new ReceiveThread(this,textAll,_socketInformation) ;
 		// lancement du thread
 		tSocket.start();
 		try {
@@ -171,6 +172,22 @@ public class ChatPrFrame extends JFrame {
 	public String send(){
 		return  textClient.getText();
 	}
-	
+	public void closeConnection()
+	{
+		SocketMessage socketMessage = new SocketMessage(true,"SERVEUR", "Disconnect", socketInformation.getNickname(), SocketMessageType.MESSAGE_QUIT);
+  	  	SocketCommunication socketCommunication = new SocketCommunication();
+  	  	try {
+				socketCommunication.sendMessage(socketMessage, socketInformation.getStreamOut());
+				socketInformation.stop();
+				
+			} catch (IOException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+  	  	tSocket.stop();
+  	  	if(tTopic!=null)
+  		  tTopic.stop();
+  	 
+	}
 
 }

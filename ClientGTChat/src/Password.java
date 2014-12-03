@@ -73,7 +73,7 @@ public class Password extends JFrame {
 				Boolean connexionStatus = false;
 				SocketCommunication socketCommunication = new SocketCommunication();
 				try {
-					socketCommunication.sendMessage(new SocketMessage("Serveur", String.copyValueOf(passwordField.getPassword()), loginframe.getNameUser(), SocketMessageType.INFO_ADMIN), socketInformation.getStreamOut());
+					socketCommunication.sendMessage(new SocketMessage(true,"Serveur", String.copyValueOf(passwordField.getPassword()), loginframe.getNameUser(), SocketMessageType.INFO_ADMIN), socketInformation.getStreamOut());
 					SocketMessage message = socketCommunication.convertStringtoSocketMessage(socketCommunication.receiveMessage(socketInformation.getStreamIn()));
 					System.out.println(message.getMessageContent());
 					switch (message.getMessageType()) {

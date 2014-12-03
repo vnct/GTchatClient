@@ -6,7 +6,6 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
 import com.component.jms.JMSMessageConsumer;
-
 import com.irc.socket.SocketCommunication;
 import com.irc.socket.SocketInformation;
 import com.irc.socket.SocketMessage;
@@ -16,13 +15,15 @@ public class ReceiveInformation extends Thread {
 	
 	private JTextArea chatBox;
 	private JMSMessageConsumer messageConsumer;
-	
+
 
 	public ReceiveInformation(JTextArea textAll,String brokerUrl) throws JMSException {
 		String jmsAddress = "tcp://"+brokerUrl+":61616";
 		messageConsumer = new JMSMessageConsumer(jmsAddress, "TOPIC.TOPIC");
 		this.chatBox = textAll;
 	}
+
+
 
 
 	@Override

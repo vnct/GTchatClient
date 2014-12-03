@@ -9,11 +9,11 @@ public class SocketCommunication {
 	// fonction qui envoie la liste des users connectés
 		public void sendMessage(SocketMessage message, DataOutputStream streamOut) throws IOException
 		{
-			
 			String parseur=">";
-			streamOut.writeUTF(message.getMessageType()+parseur+message.getNicknameDestinataire()+parseur+message.getNicknameExpediteur()+parseur+message.getMessageContent()); // TODO : A mettre dans un fichier properties
+			streamOut.writeUTF(message.getPrivateMsg()+parseur+message.getMessageType()+parseur+message.getNicknameDestinataire()+parseur+message.getNicknameExpediteur()+parseur+message.getMessageContent()); // TODO : A mettre dans un fichier properties
 			streamOut.flush();
 		}
+		
 		public String receiveMessage(DataInputStream streamIn) throws IOException
 		{
 			return streamIn.readUTF();
@@ -23,19 +23,34 @@ public class SocketCommunication {
 			try
 			{
 				String[] strings = msg.split(">");
-				SocketMessage message = new SocketMessage(strings[1], strings[3], strings[2],SocketMessageType.valueOf(strings[0])) ;
+				SocketMessage message = new SocketMessage(Boolean.valueOf(strings[0]),strings[2], strings[4], strings[3],SocketMessageType.valueOf(strings[1])) ;
 				return message;
 			}
 			catch(Exception exception)
 			{
 				exception.printStackTrace();
 			}
-			return new SocketMessage("", "", "", SocketMessageType.MESSAGE_ERROR);
+			return new SocketMessage(false,"", "", "", SocketMessageType.MESSAGE_ERROR);
 		
 		}
 		public String convertSocketMessagetoString(SocketMessage message)
 		{
 			String parseur=">";
 			return message.getMessageType()+parseur+message.getNicknameDestinataire()+parseur+message.getNicknameExpediteur()+parseur+message.getMessageContent();
+		}
+		public String getNickName(String message)
+		{
+			try {
+				
+				String[] strings  =  message.split(" ");
+				if(strings[0].equals("!kick"))
+				{
+					return strings[1];
+				}
+			
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			return "";
 		}
 }

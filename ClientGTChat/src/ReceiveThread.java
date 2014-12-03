@@ -12,6 +12,7 @@ public class ReceiveThread extends Thread {
 	
 	private JTextArea chatBox;
 	private SocketInformation socketInformation ;
+	private ChatPrFrame chatPrFrame;
 	
 	public ReceiveThread(JTextArea textAll) {
 		
@@ -23,6 +24,14 @@ public class ReceiveThread extends Thread {
 		socketInformation = _socketInformation;
 		this.chatBox = textAll;
 	}
+
+	public ReceiveThread(ChatPrFrame _chatPrFrame, JTextArea textAll,
+			SocketInformation _socketInformation) {
+		chatPrFrame = _chatPrFrame;
+		socketInformation = _socketInformation;
+		this.chatBox = textAll;
+	}
+
 
 	@Override
 	public void run() {
@@ -37,8 +46,19 @@ public class ReceiveThread extends Thread {
 					SocketMessage socketMessage = socketCommunication.convertStringtoSocketMessage(socketInformation.getStreamIn().readUTF());
 					if(!socketMessage.getNicknameExpediteur().equals(socketInformation.getNickname()))
 					{
-						String textToDisplay = socketMessage.getNicknameExpediteur()+">"+socketMessage.getMessageContent();
-						addStringToChatBox(textToDisplay+ "\n");
+						switch (socketMessage.getMessageType()) {
+						case MESSAGE_TEXT:
+							String textToDisplay = socketMessage.getNicknameExpediteur()+">"+socketMessage.getMessageContent();
+							addStringToChatBox(textToDisplay+ "\n");
+							break;
+						case MESSAGE_QUIT:
+							chatPrFrame.closeConnection();
+							break;
+						default:
+							break;
+						}
+						
+						
 					}
 						
 							
