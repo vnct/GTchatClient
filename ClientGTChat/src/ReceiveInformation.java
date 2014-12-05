@@ -47,6 +47,7 @@ public class ReceiveInformation extends Thread {
 					if(string!=null)
 					{
 						SocketCommunication socketCommunication = new SocketCommunication();
+						System.out.println("Message reçu --> " + string.getText());
 						SocketMessage socketMessage = socketCommunication.convertStringtoSocketMessage(string.getText());
 						switch (socketMessage.getMessageType()) {
 						case USER_CONNECT:

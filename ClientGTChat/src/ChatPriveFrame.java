@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -42,6 +43,7 @@ public class ChatPriveFrame extends JFrame {
     private String dest;
     private SocketInformation socketInformation = null;
     private CSVAction csvAction = null;
+
 
 	/**
 	 * Create the frame.
@@ -98,7 +100,7 @@ public class ChatPriveFrame extends JFrame {
 		
 		scrollPane.setBounds(5, 5, 429, 176);
 		scrollPane.setEnabled(false);
-		textPrive.setEnabled(false);
+		textPrive.setEditable(false);
 		scrollPane.setViewportView(textPrive);
 		contentPane.add(scrollPane);
 		
@@ -151,7 +153,7 @@ public class ChatPriveFrame extends JFrame {
 			SocketCommunication socketCommunication = new SocketCommunication();
 			SocketMessage socketMessage = socketCommunication.convertStringTabtoSocketMessage(my_line);
 			
-			if(socketMessage.getNicknameDestinataire().equals("***"))
+			if(socketMessage.getNicknameDestinataire().equals(user))
 			{
 				i++;
 				String textToDisplay = socketMessage.getNicknameExpediteur()+">"+socketMessage.getMessageContent();

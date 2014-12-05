@@ -15,7 +15,6 @@ public class ReceiveThread extends Thread {
 	private JTextArea chatBox;
 	private SocketInformation socketInformation ;
 	private ChatPrFrame chatPrFrame;
-	private HashMap<String, ChatPriveFrame> hashMap;
 	private CSVAction action ;
 	
 
@@ -27,7 +26,7 @@ public class ReceiveThread extends Thread {
 
 	public ReceiveThread(JTextArea textAll, SocketInformation _socketInformation,CSVAction _CsvAction) {
 		socketInformation = _socketInformation;
-		hashMap = new HashMap<String, ChatPriveFrame>();
+		
 		action = _CsvAction;
 
 		this.chatBox = textAll;
@@ -37,22 +36,21 @@ public class ReceiveThread extends Thread {
 			SocketInformation _socketInformation,CSVAction _CsvAction) {
 		chatPrFrame = _chatPrFrame;
 		socketInformation = _socketInformation;
-		hashMap = new HashMap<String, ChatPriveFrame>();
 		action = _CsvAction;
 		this.chatBox = textAll;
 	}
 
 	public void AddPrivateUser(String string,ChatPriveFrame chatPriveFrame)
 	{
-		hashMap.put(string, chatPriveFrame);
+		chatPrFrame.getHashMap().put(string, chatPriveFrame);
 	}
 	public void DeletePrivateUser(String string,ChatPriveFrame chatPriveFrame)
 	{
-		hashMap.remove(string);
+		chatPrFrame.getHashMap().remove(string);
 	}
 	public void ClosePrivateUser()
 	{
-		hashMap.clear();
+		chatPrFrame.getHashMap().clear();
 	}
 
 	@Override
@@ -79,7 +77,7 @@ public class ReceiveThread extends Thread {
 								}
 								else
 								{
-									if(hashMap.containsKey(socketMessage.getNicknameExpediteur()))
+									if(chatPrFrame.getHashMap().containsKey(socketMessage.getNicknameExpediteur()))
 									{
 										addStringToPrivateBox(socketMessage.getNicknameExpediteur(),textToDisplay + "\n");
 										
@@ -121,7 +119,7 @@ public class ReceiveThread extends Thread {
 			@Override
 			public void run() {
 
-				hashMap.get(user).getTextPrive().append(message);
+				chatPrFrame.getHashMap().get(user).getTextPrive().append(message);
 			}
 		});
 	}

@@ -31,6 +31,8 @@ import javax.swing.JScrollBar;
 
 
 
+
+
 import com.component.csv.CSVAction;
 import com.irc.socket.SocketCommunication;
 import com.irc.socket.SocketInformation;
@@ -41,6 +43,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -71,7 +74,7 @@ public class ChatPrFrame extends JFrame {
 
 	private JList list = null;
 	
-
+	private HashMap<String, ChatPriveFrame> hashMap;
 	/**
 	 * Create the frame.
 	 */
@@ -87,6 +90,7 @@ public class ChatPrFrame extends JFrame {
 		actionHistorique.setStringsTitleCSV(new String[]{"Private","Type","Destinataire","Expediteur","Text"});
 		actionHistorique.createFile();
 	
+		hashMap = new HashMap<String, ChatPriveFrame>();
 		
 		this.setTitle("GTChat - " + _socketInformation.getNickname());
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -165,7 +169,7 @@ public class ChatPrFrame extends JFrame {
 		contentPane.add(scrollBar);
 		
 		scrollPane.setBounds(5, 5, 298, 178);
-		textAll.setEnabled(false);
+		textAll.setEditable(false);
 		scrollPane.setViewportView(textAll);
 		
 		contentPane.add(scrollPane);
@@ -301,6 +305,18 @@ public class ChatPrFrame extends JFrame {
 		tSocket.AddPrivateUser(expediteur, chatprive);
 		chatprive.setVisible(true);
 	}
+
+
+	public HashMap<String, ChatPriveFrame> getHashMap() {
+		return hashMap;
+	}
+
+
+	public void setHashMap(HashMap<String, ChatPriveFrame> hashMap) {
+		this.hashMap = hashMap;
+	}
+	
+	
 
 	
 }
