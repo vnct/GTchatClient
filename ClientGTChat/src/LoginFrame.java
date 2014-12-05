@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import com.component.csv.CSVAction;
 import com.irc.socket.SocketCommunication;
 import com.irc.socket.SocketInformation;
 import com.irc.socket.SocketMessage;
@@ -23,6 +24,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -42,7 +45,7 @@ public class LoginFrame extends JFrame {
 	private JLabel lblPort = new JLabel("Port :");
 	private JLabel lblAddressIp = new JLabel("IP Address :");
 	private JLabel lblNickname = new JLabel("Nickname :");
-		
+	private CSVAction actionConfiguration ;
 	/**
 	 * Create the frame.
 	 */
@@ -56,6 +59,11 @@ public class LoginFrame extends JFrame {
 		this.setResizable(false);
 		//contentPane.setBackground(Color.white);
 		
+		actionConfiguration = new CSVAction();
+		actionConfiguration.setFilename("configurationFile");
+		actionConfiguration.setStringsTitleCSV(new String[]{"IP","PORT"});
+		actionConfiguration.createFile();
+	
 		
 		 //Quitter l'application
 		this.addWindowListener(new WindowAdapter(){
@@ -86,11 +94,26 @@ public class LoginFrame extends JFrame {
 		
 		boxAddr.setBounds(110, 5, 100, 20);
 		boxAddr.setPreferredSize(new Dimension(100, 20));
-		boxAddr.addItem("127.0.0.1");
-		boxAddr.addItem("192.168.160.131");
-		boxAddr.addItem("192.168.160.131");
+		List<String> list = loadConfiguration();
+		for(String st : list)
+		{
+			boxAddr.addItem(st);
+			
+		}
+		/*boxAddr.addItem("127.0.0.1");
+		boxAddr.addItem("192.168.160.152");
+		boxAddr.addItem("192.168.160.131");*/
 		
 		topip.add(boxAddr);
+		
+		boxAddr.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				textPort.setText(String.valueOf(loadPort(boxAddr.getSelectedItem().toString())));
+				
+			}
+		});
 		
 		contentPane.add(topip);
 		
@@ -226,6 +249,40 @@ public class LoginFrame extends JFrame {
 		
 			
 	}
+	
+	public List<String> loadConfiguration()
+	{
+		List<String[]> strings = actionConfiguration.getCSV();
+		List<String> listAddress = new ArrayList<String>();
+		for(String[] st : strings)
+		{
+			try{
+				listAddress.add(st[0]);
+			}
+			catch(Exception exception)
+			{
+				
+			}
+		}
+		return listAddress;
+	}
+	public Integer loadPort(String ipaddress)
+	{
+		List<String[]> strings = actionConfiguration.getCSV();
+		for(String[] st : strings)
+		{
+			try{
+				if(st[0].equals(ipaddress))
+					return Integer.valueOf(st[1]);
+			}
+			catch(Exception exception)
+			{
+				
+			}
+		}
+		return 0;
+	}
+	
 	
 		public String getIp(){
 			return boxAddr.getSelectedItem().toString();

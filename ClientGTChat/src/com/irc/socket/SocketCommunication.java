@@ -36,7 +36,7 @@ public class SocketCommunication {
 		public String convertSocketMessagetoString(SocketMessage message)
 		{
 			String parseur=">";
-			return message.getMessageType()+parseur+message.getNicknameDestinataire()+parseur+message.getNicknameExpediteur()+parseur+message.getMessageContent();
+			return message.getPrivateMsg()+parseur+message.getMessageType()+parseur+message.getNicknameDestinataire()+parseur+message.getNicknameExpediteur()+parseur+message.getMessageContent();
 		}
 		public String getNickName(String message)
 		{
@@ -52,5 +52,25 @@ public class SocketCommunication {
 				// TODO: handle exception
 			}
 			return "";
+		}
+		public String[] convertSocketMessagetoStringTab(
+				SocketMessage socketMessage) {
+			// TODO Auto-generated method stub
+		
+			return new String[]{socketMessage.getPrivateMsg().toString(),socketMessage.getMessageType().toString(),socketMessage.getNicknameDestinataire(),socketMessage.getNicknameExpediteur(),socketMessage.getMessageContent()};
+		}
+		public SocketMessage convertStringTabtoSocketMessage(String[] strings)
+		{
+			try
+			{
+				SocketMessage message = new SocketMessage(Boolean.valueOf(strings[0]),strings[2], strings[4], strings[3],SocketMessageType.valueOf(strings[1])) ;
+				return message;
+			}
+			catch(Exception exception)
+			{
+				exception.printStackTrace();
+			}
+			return new SocketMessage(false,"", "", "", SocketMessageType.MESSAGE_ERROR);
+		
 		}
 }

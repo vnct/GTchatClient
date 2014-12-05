@@ -19,6 +19,12 @@ import javax.swing.JScrollBar;
 
 
 
+
+
+
+
+
+import com.component.csv.CSVAction;
 import com.irc.socket.SocketCommunication;
 import com.irc.socket.SocketInformation;
 import com.irc.socket.SocketMessage;
@@ -27,6 +33,8 @@ import com.irc.socket.SocketMessageType;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ChatPrFrame extends JFrame {
@@ -50,6 +58,8 @@ public class ChatPrFrame extends JFrame {
 	private SocketInformation socketInformation = null;
 	private Thread tSocket = null;
 	private Thread tTopic = null;
+	private CSVAction actionHistorique ;
+	
 
 	/**
 	 * Create the frame.
@@ -57,8 +67,16 @@ public class ChatPrFrame extends JFrame {
 	
 	
 	
+	
+	
 	public ChatPrFrame(final LoginFrame loginframe,SocketInformation _socketInformation) {
 		socketInformation = _socketInformation;
+		actionHistorique = new CSVAction();
+		actionHistorique.setFilename("historiqueFile");
+		actionHistorique.setStringsTitleCSV(new String[]{"Private","Type","Destinataire","Expediteur","Text"});
+		actionHistorique.createFile();
+	
+		
 		this.setTitle("GTChat");
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setBounds(100, 100, 450, 300);
@@ -114,6 +132,7 @@ public class ChatPrFrame extends JFrame {
 				}
 				try {
 					socketMessage = new SocketMessage(false,"***", msgToSend, loginframe.getNameUser(), type);
+					actionHistorique.appendfile(socketCommunication.convertSocketMessagetoStringTab(socketMessage));
 					socketCommunication.sendMessage(socketMessage, socketInformation.getStreamOut());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -147,13 +166,14 @@ public class ChatPrFrame extends JFrame {
 		scrollPane_2.setBackground(Color.white);
 		contentPane.add(scrollPane_2);
 		
+		reloadHistorique("***");
 		
 		this.setContentPane(contentPane);
 
+	
 		
 		
-		
-		tSocket = new ReceiveThread(this,textAll,_socketInformation) ;
+		tSocket = new ReceiveThread(this,textAll,_socketInformation,actionHistorique) ;
 		// lancement du thread
 		tSocket.start();
 		try {
@@ -165,6 +185,29 @@ public class ChatPrFrame extends JFrame {
 		}
 		
 		
+	}
+	
+	
+	public void reloadHistorique(String user)
+	{
+		List<String[]> strings = actionHistorique.getCSV();
+		Integer i=0;
+		for(String[] my_line : strings)
+		{
+			SocketCommunication socketCommunication = new SocketCommunication();
+			SocketMessage socketMessage = socketCommunication.convertStringTabtoSocketMessage(my_line);
+			i++;
+			if(socketMessage.getNicknameDestinataire().equals("***"))
+			{
+				String textToDisplay = socketMessage.getNicknameExpediteur()+">"+socketMessage.getMessageContent();
+				textAll.append(textToDisplay + "\n");
+			}
+			if(i==100)
+			{
+				break;
+			}
+			
+		}
 	}
 	
 	
