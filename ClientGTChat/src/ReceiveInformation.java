@@ -20,14 +20,15 @@ public class ReceiveInformation extends Thread {
 	private JMSMessageConsumer messageConsumer;
 	private JList jlist;
 	private String nickname;
+	private ChatPrFrame chatPrFrame;
 
-
-	public ReceiveInformation(JList _jlist, JTextArea textAll,String brokerUrl,String _nickname) throws JMSException {
+	public ReceiveInformation(ChatPrFrame _chatPrFrame,JList _jlist, JTextArea textAll,String brokerUrl,String _nickname) throws JMSException {
 		String jmsAddress = "tcp://"+brokerUrl+":61616";
 		this.jlist = _jlist;
 		messageConsumer = new JMSMessageConsumer(jmsAddress, "TOPIC.TOPIC");
 		this.chatBox = textAll;
 		this.nickname = _nickname;
+		chatPrFrame= _chatPrFrame;
 	}
 
 
@@ -48,16 +49,23 @@ public class ReceiveInformation extends Thread {
 					{
 						SocketCommunication socketCommunication = new SocketCommunication();
 						System.out.println("Message reçu --> " + string.getText());
+						String texte_to_display ="";
 						SocketMessage socketMessage = socketCommunication.convertStringtoSocketMessage(string.getText());
 						switch (socketMessage.getMessageType()) {
 						case USER_CONNECT:
-							addStringToChatBox(socketMessage.getMessageContent() + " connected" + "\n");
+							texte_to_display = socketMessage.getMessageContent() + " connected" + "\n";
+							addStringToPrivateBox(socketMessage.getMessageContent(),texte_to_display);
+							addStringToChatBox(texte_to_display);
 							break;
 						case USER_DISCONNECT:
-							addStringToChatBox(socketMessage.getMessageContent() + " disconneted" + "\n");
+							texte_to_display = socketMessage.getMessageContent() + " disconneted" + "\n";
+							addStringToPrivateBox(socketMessage.getMessageContent(),texte_to_display);
+							addStringToChatBox(texte_to_display);
 							break;
 						case USER_KICK:
-							addStringToChatBox(socketMessage.getMessageContent() + " kicked by admin" + "\n");
+							texte_to_display = socketMessage.getMessageContent() + " kicked by admin" + "\n";
+							addStringToPrivateBox(socketMessage.getMessageContent(),texte_to_display);
+							addStringToChatBox(texte_to_display);
 							break;
 						case USER_LIST:
 							System.out.println(socketMessage.getMessageContent());
@@ -107,6 +115,25 @@ public class ReceiveInformation extends Thread {
 		});
 	}
 
+	public void addStringToPrivateBox(final String user,final String message) {
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+
+				try{
+					chatPrFrame.getHashMap().get(user).getTextPrive().append(message);
+				}
+				catch(Exception e)
+				{
+					
+				}
+			}
+		});
+	}
+	
+	
 	private void addStringToChatBox( final String message) {
 		
 		SwingUtilities.invokeLater(new Runnable() {

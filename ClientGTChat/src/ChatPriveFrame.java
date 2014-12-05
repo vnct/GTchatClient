@@ -1,22 +1,23 @@
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JScrollBar;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
 
 import com.component.csv.CSVAction;
 import com.irc.socket.SocketCommunication;
@@ -33,6 +34,13 @@ public class ChatPriveFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	
+	
+	private JMenuBar menuBar = new JMenuBar();
+	private JMenu fichier = new JMenu("Fichier");
+	private JMenu edition = new JMenu("Edition");
+
+	private JMenuItem item1 = new JMenuItem("Fermer");
+	private JMenuItem item2 = new JMenuItem("A propos...");
 	
 	private JPanel contentPane = new JPanel();
 	private JScrollPane scrollPane = new JScrollPane();
@@ -61,9 +69,22 @@ public class ChatPriveFrame extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		
+
+		this.fichier.add(item1);
+		this.edition.add(item2);
 		
+		item1.addActionListener(new ActionListener(){
+		      public void actionPerformed(ActionEvent arg0) {
+            	  dispose(); 
+		        }        
+		      });
 		
+
+		this.menuBar.add(fichier);
+		this.menuBar.add(edition);
 		
+
+	    this.setJMenuBar(menuBar);
 		/*
 		 * si on quitte l'application
 		 * 
@@ -72,7 +93,7 @@ public class ChatPriveFrame extends JFrame {
 		this.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
                   int reponse = JOptionPane.showConfirmDialog(null,
-                                       "Voulez-vous vous deconneter ?",
+                                       "Voulez-vous fermer cette conversation ?",
                                        "Confirmation",
                                        JOptionPane.YES_NO_OPTION,
                                        JOptionPane.QUESTION_MESSAGE);
@@ -109,26 +130,35 @@ public class ChatPriveFrame extends JFrame {
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				String msgToSend = send().replace(">", "").trim();
-				SocketCommunication socketCommunication = new SocketCommunication();
-				SocketMessage socketMessage = null;
-				SocketMessageType type = SocketMessageType.MESSAGE_TEXT;
-				textPrive.append(socketInformation.getNickname() + " > " + msgToSend+ "\n");
-				try {
-					socketMessage = new SocketMessage(true,dest, msgToSend, socketInformation.getNickname(), type);
-					action.appendfile(socketCommunication.convertSocketMessagetoStringTab(socketMessage));
-					socketCommunication.sendMessage(socketMessage, socketInformation.getStreamOut());
-					//System.out.println(socketMessage.getMessageType());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				textClient.setText("");
+				sendMessage();
 			}
 
 
 
+		});
+		
+		textClient.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER){
+					
+					sendMessage();
+				}
+				
+			}
 		});
 		
 		reloadHistorique(dest);
@@ -178,6 +208,26 @@ public class ChatPriveFrame extends JFrame {
 	}
 	public void setTextPrive(JTextArea textPrive) {
 		this.textPrive = textPrive;
+	}
+	
+	private void sendMessage()
+	{
+		String msgToSend = send().replace(">", "").trim();
+		SocketCommunication socketCommunication = new SocketCommunication();
+		SocketMessage socketMessage = null;
+		SocketMessageType type = SocketMessageType.MESSAGE_TEXT;
+		textPrive.append(socketInformation.getNickname() + " > " + msgToSend+ "\n");
+		try {
+			socketMessage = new SocketMessage(true,dest, msgToSend, socketInformation.getNickname(), type);
+			csvAction.appendfile(socketCommunication.convertSocketMessagetoStringTab(socketMessage));
+			socketCommunication.sendMessage(socketMessage, socketInformation.getStreamOut());
+			//System.out.println(socketMessage.getMessageType());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		textClient.setText("");
 	}
 	
 	

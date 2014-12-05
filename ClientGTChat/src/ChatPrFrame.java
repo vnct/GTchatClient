@@ -1,5 +1,7 @@
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
@@ -10,11 +12,19 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.JScrollBar;
+
+
+
+
+
 
 
 
@@ -54,6 +64,13 @@ public class ChatPrFrame extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private JMenuBar menuBar = new JMenuBar();
+	private JMenu fichier = new JMenu("Fichier");
+	private JMenu edition = new JMenu("Edition");
+
+	private JMenuItem item1 = new JMenuItem("Deconnection");
+	private JMenuItem item2 = new JMenuItem("A propos...");
+	
 	
 	
 	private JPanel contentPane = new JPanel();
@@ -61,7 +78,7 @@ public class ChatPrFrame extends JFrame {
 	private JScrollPane scrollPane_1 = new JScrollPane();
 	private JScrollPane scrollPane_2 = new JScrollPane();
 	private JButton btnSend = new JButton("SEND");
-	private JScrollBar scrollBar = new JScrollBar();
+
 	private JTextArea textListPers = new JTextArea();
 	private JTextArea textClient = new JTextArea();
 	private JTextArea textAll = new JTextArea();
@@ -94,10 +111,24 @@ public class ChatPrFrame extends JFrame {
 		
 		this.setTitle("GTChat - " + _socketInformation.getNickname());
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		this.setBounds(100, 100, 450, 300);
+		this.setBounds(100, 100, 450, 315);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		
+		this.fichier.add(item1);
+		this.edition.add(item2);
+		item1.addActionListener(new ActionListener(){
+		      public void actionPerformed(ActionEvent arg0) {
+          	  closeConnection();
+          	  dispose();
+                loginframe.disable();  
+		        }        
+		      });
+		
+
+		this.menuBar.add(fichier);
+		this.menuBar.add(edition);
+		 this.setJMenuBar(menuBar);
 		/*
 		 * si on quitte l'application
 		 * 
@@ -113,7 +144,7 @@ public class ChatPrFrame extends JFrame {
                   if (reponse==JOptionPane.YES_OPTION){
                 	  closeConnection();
                 	  dispose();
-                      loginframe.setVisible(true);    
+                	  loginframe.disable();  
                   }
             }
 		});
@@ -131,42 +162,38 @@ public class ChatPrFrame extends JFrame {
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				String msgToSend = send().replace(">", "").trim();
-				SocketCommunication socketCommunication = new SocketCommunication();
-				SocketMessage socketMessage = null;
-				SocketMessageType type = SocketMessageType.MESSAGE_TEXT;
-				if(msgToSend.contains("!kick"))
-				{
-					System.out.println("Changememnt du type");
-					type = SocketMessageType.USER_KICK;
-				}
-				else
-				{
-					textAll.append(socketInformation.getNickname() + " > " + msgToSend+ "\n");
-					
-					
-				}
-				try {
-					socketMessage = new SocketMessage(false,"***", msgToSend, socketInformation.getNickname(), type);
-					actionHistorique.appendfile(socketCommunication.convertSocketMessagetoStringTab(socketMessage));
-					socketCommunication.sendMessage(socketMessage, socketInformation.getStreamOut());
-					System.out.println(socketMessage.getMessageType());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				textClient.setText("");
+				send_msg(loginframe);
 			}
 		});
+		textClient.addKeyListener(new KeyListener() {
 
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				if (arg0.getKeyCode() == KeyEvent.VK_ENTER)
+					send_msg(loginframe);
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+
+		});
 		reloadHistorique("***");
 		
 		btnSend.setBounds(263, 205, 65, 40);
 		contentPane.add(btnSend);
 		
-		scrollBar.setBounds(309, 5, 17, 178);
-		contentPane.add(scrollBar);
+	
 		
 		scrollPane.setBounds(5, 5, 298, 178);
 		textAll.setEditable(false);
@@ -231,7 +258,7 @@ public class ChatPrFrame extends JFrame {
 		// lancement du thread
 		tSocket.start();
 		try {
-			tTopic = new ReceiveInformation(list,textAll, socketInformation.getUrl(),socketInformation.getNickname());
+			tTopic = new ReceiveInformation(this,list,textAll, socketInformation.getUrl(),socketInformation.getNickname());
 			tTopic.start();
 		} catch (JMSException e1) {
 			// TODO Auto-generated catch block
@@ -315,7 +342,35 @@ public class ChatPrFrame extends JFrame {
 	public void setHashMap(HashMap<String, ChatPriveFrame> hashMap) {
 		this.hashMap = hashMap;
 	}
-	
+	private void send_msg(LoginFrame loginframe )
+	{
+		String msgToSend = send().replace(">", "").trim();
+		SocketCommunication socketCommunication = new SocketCommunication();
+		SocketMessage socketMessage = null;
+		SocketMessageType type = SocketMessageType.MESSAGE_TEXT;
+		if(msgToSend.contains("!kick"))
+		{
+			System.out.println("Changememnt du type");
+			type = SocketMessageType.USER_KICK;
+		}
+		else
+		{
+			textAll.append(socketInformation.getNickname() + " > " + msgToSend+ "\n");
+			
+			
+		}
+		try {
+			socketMessage = new SocketMessage(false,"***", msgToSend, socketInformation.getNickname(), type);
+			actionHistorique.appendfile(socketCommunication.convertSocketMessagetoStringTab(socketMessage));
+			socketCommunication.sendMessage(socketMessage, socketInformation.getStreamOut());
+			System.out.println(socketMessage.getMessageType());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		textClient.setText("");
+	}
 	
 
 	
