@@ -129,6 +129,8 @@ public class ChatPriveFrame extends JFrame {
 
 		});
 		
+		reloadHistorique(dest);
+		
 		btnSend.setBounds(363, 209, 71, 46);
 		contentPane.add(btnSend);
 		
@@ -148,9 +150,10 @@ public class ChatPriveFrame extends JFrame {
 		{
 			SocketCommunication socketCommunication = new SocketCommunication();
 			SocketMessage socketMessage = socketCommunication.convertStringTabtoSocketMessage(my_line);
-			i++;
-			if(socketMessage.getNicknameDestinataire().equals(dest))
+			
+			if(socketMessage.getNicknameDestinataire().equals("***"))
 			{
+				i++;
 				String textToDisplay = socketMessage.getNicknameExpediteur()+">"+socketMessage.getMessageContent();
 				textPrive.append(textToDisplay + "\n");
 			}
@@ -161,6 +164,7 @@ public class ChatPriveFrame extends JFrame {
 			
 		}
 	}
+	
 	
 	
 	private String send() {

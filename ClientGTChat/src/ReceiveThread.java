@@ -133,8 +133,7 @@ public class ReceiveThread extends Thread {
 			@Override
 			public void run() {
 
-				chatBox.append(message);
-			}
+				chatBox.append(message);		}
 		});
 	}
 

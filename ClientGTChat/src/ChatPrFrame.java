@@ -88,7 +88,7 @@ public class ChatPrFrame extends JFrame {
 		actionHistorique.createFile();
 	
 		
-		this.setTitle("GTChat");
+		this.setTitle("GTChat - " + _socketInformation.getNickname());
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setBounds(100, 100, 450, 300);
 		this.setLocationRelativeTo(null);
@@ -170,7 +170,7 @@ public class ChatPrFrame extends JFrame {
 		
 		contentPane.add(scrollPane);
 		
-	
+		
 		
 		
 		list = new JList<String>(userlist);
@@ -246,9 +246,10 @@ public class ChatPrFrame extends JFrame {
 		{
 			SocketCommunication socketCommunication = new SocketCommunication();
 			SocketMessage socketMessage = socketCommunication.convertStringTabtoSocketMessage(my_line);
-			i++;
+			
 			if(socketMessage.getNicknameDestinataire().equals("***"))
 			{
+				i++;
 				String textToDisplay = socketMessage.getNicknameExpediteur()+">"+socketMessage.getMessageContent();
 				textAll.append(textToDisplay + "\n");
 			}

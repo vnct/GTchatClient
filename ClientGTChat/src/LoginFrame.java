@@ -103,6 +103,7 @@ public class LoginFrame extends JFrame {
 		boxAddr.addItem("192.168.160.152");
 		boxAddr.addItem("192.168.160.131");*/
 		
+		
 		topip.add(boxAddr);
 		
 		boxAddr.addActionListener(new ActionListener() {
