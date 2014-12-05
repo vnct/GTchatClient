@@ -111,7 +111,7 @@ public class ChatPriveFrame extends JFrame {
 		
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// recuperer la string pour ce user
+				sendMessage();
 			}
 		});
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -131,6 +131,7 @@ public class ChatPriveFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				sendMessage();
+				
 			}
 
 
@@ -147,16 +148,15 @@ public class ChatPriveFrame extends JFrame {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				// TODO Auto-generated method stub
-				
+					if (e.getKeyCode() == KeyEvent.VK_ENTER){
+					
+					sendMessage();
+				}
 			}
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER){
-					
-					sendMessage();
-				}
+				
 				
 			}
 		});

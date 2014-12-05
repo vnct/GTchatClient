@@ -93,7 +93,9 @@ public class ReceiveThread extends Thread {
 								break;
 							case MESSAGE_QUIT:
 								System.out.println("MESSAGE_QUIT");
+								
 								chatPrFrame.closeConnection();
+							
 								break;
 							default:
 								break;

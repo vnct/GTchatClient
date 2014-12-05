@@ -169,15 +169,14 @@ public class ChatPrFrame extends JFrame {
 
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				if (arg0.getKeyCode() == KeyEvent.VK_ENTER)
-					send_msg(loginframe);
+				
 				
 			}
 
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				// TODO Auto-generated method stub
-				
+				if (arg0.getKeyCode() == KeyEvent.VK_ENTER)
+					send_msg(loginframe);
 			}
 
 			@Override
@@ -370,6 +369,7 @@ public class ChatPrFrame extends JFrame {
 		}
 		
 		textClient.setText("");
+		
 	}
 	
 
