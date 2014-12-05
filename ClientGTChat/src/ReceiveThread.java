@@ -66,6 +66,7 @@ public class ReceiveThread extends Thread {
 				try {
 					SocketCommunication socketCommunication = new SocketCommunication();
 					SocketMessage socketMessage = socketCommunication.convertStringtoSocketMessage(socketInformation.getStreamIn().readUTF());
+					System.out.println(socketMessage.getMessageContent() + socketMessage.getMessageType());
 					if(!socketMessage.getNicknameExpediteur().equals(socketInformation.getNickname()))
 					{
 						switch (socketMessage.getMessageType()) {
@@ -78,11 +79,22 @@ public class ReceiveThread extends Thread {
 								}
 								else
 								{
-									addStringToPrivateBox(socketMessage.getNicknameExpediteur(),textToDisplay + "\n");
+									if(hashMap.containsKey(socketMessage.getNicknameExpediteur()))
+									{
+										addStringToPrivateBox(socketMessage.getNicknameExpediteur(),textToDisplay + "\n");
+										
+									}
+									else
+									{
+										chatPrFrame.createTabPrivate(socketMessage.getNicknameExpediteur());
+										addStringToPrivateBox(socketMessage.getNicknameExpediteur(),textToDisplay + "\n");
+										
+									}
 								}
 								
 								break;
 							case MESSAGE_QUIT:
+								System.out.println("MESSAGE_QUIT");
 								chatPrFrame.closeConnection();
 								break;
 							default:
@@ -109,7 +121,7 @@ public class ReceiveThread extends Thread {
 			@Override
 			public void run() {
 
-			//	hashMap.get(user).getChatBox().append(message);
+				hashMap.get(user).getTextPrive().append(message);
 			}
 		});
 	}

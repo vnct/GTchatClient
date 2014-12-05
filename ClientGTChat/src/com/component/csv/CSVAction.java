@@ -89,7 +89,7 @@ public class CSVAction {
     public void appendfile( String[] strings)
     {
         try {
-        	System.out.println(path_file);
+        	//System.out.println(path_file);
             CSVWriter csvWriter = new CSVWriter(new FileWriter(path_file, true));
             csvWriter.writeNext(strings);
             csvWriter.close();

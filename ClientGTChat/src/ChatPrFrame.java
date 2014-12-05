@@ -1,5 +1,7 @@
 
 import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -7,11 +9,16 @@ import javax.jms.JMSException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.JScrollBar;
+
+
+
+
 
 
 
@@ -56,9 +63,13 @@ public class ChatPrFrame extends JFrame {
 	private JTextArea textClient = new JTextArea();
 	private JTextArea textAll = new JTextArea();
 	private SocketInformation socketInformation = null;
-	private Thread tSocket = null;
-	private Thread tTopic = null;
+	private ReceiveThread tSocket = null;
+	private ReceiveInformation tTopic = null;
 	private CSVAction actionHistorique ;
+
+	public String[] userlist = new String[]{};
+
+	private JList list = null;
 	
 
 	/**
@@ -69,7 +80,7 @@ public class ChatPrFrame extends JFrame {
 	
 	
 	
-	public ChatPrFrame(final LoginFrame loginframe,SocketInformation _socketInformation) {
+	public ChatPrFrame(final LoginFrame loginframe, SocketInformation _socketInformation) {
 		socketInformation = _socketInformation;
 		actionHistorique = new CSVAction();
 		actionHistorique.setFilename("historiqueFile");
@@ -122,18 +133,20 @@ public class ChatPrFrame extends JFrame {
 				SocketMessageType type = SocketMessageType.MESSAGE_TEXT;
 				if(msgToSend.contains("!kick"))
 				{
+					System.out.println("Changememnt du type");
 					type = SocketMessageType.USER_KICK;
 				}
 				else
 				{
-					textAll.append(loginframe.getNameUser() + " > " + msgToSend+ "\n");
+					textAll.append(socketInformation.getNickname() + " > " + msgToSend+ "\n");
 					
 					
 				}
 				try {
-					socketMessage = new SocketMessage(false,"***", msgToSend, loginframe.getNameUser(), type);
+					socketMessage = new SocketMessage(false,"***", msgToSend, socketInformation.getNickname(), type);
 					actionHistorique.appendfile(socketCommunication.convertSocketMessagetoStringTab(socketMessage));
 					socketCommunication.sendMessage(socketMessage, socketInformation.getStreamOut());
+					System.out.println(socketMessage.getMessageType());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -143,6 +156,7 @@ public class ChatPrFrame extends JFrame {
 			}
 		});
 
+		reloadHistorique("***");
 		
 		btnSend.setBounds(263, 205, 65, 40);
 		contentPane.add(btnSend);
@@ -156,9 +170,46 @@ public class ChatPrFrame extends JFrame {
 		
 		contentPane.add(scrollPane);
 		
+	
+		
+		
+		list = new JList<String>(userlist);
+		scrollPane_1= new JScrollPane(list);
 		scrollPane_1.setBounds(334, 5, 97, 254);
-		textListPers.setEditable(false);
-		scrollPane_1.setViewportView(textListPers);
+		
+		list.addMouseListener(new MouseListener() {	
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount() == 2){
+					String selected = (String) list.getSelectedValue();
+					ChatPriveFrame chatprive = new ChatPriveFrame(socketInformation,selected,actionHistorique);
+					tSocket.AddPrivateUser(selected, chatprive);
+					chatprive.setVisible(true);
+					System.out.println(selected);
+				}else{
+					System.out.println("essaye encore !!!!");
+				}
+				
+				
+			}
+		});
+		
+		
+	
+		
 		contentPane.add(scrollPane_1);
 		
 		scrollPane_2.setBounds(6, 189, 247, 68);
@@ -166,7 +217,6 @@ public class ChatPrFrame extends JFrame {
 		scrollPane_2.setBackground(Color.white);
 		contentPane.add(scrollPane_2);
 		
-		reloadHistorique("***");
 		
 		this.setContentPane(contentPane);
 
@@ -177,7 +227,7 @@ public class ChatPrFrame extends JFrame {
 		// lancement du thread
 		tSocket.start();
 		try {
-			tTopic = new ReceiveInformation(textAll, socketInformation.getUrl());
+			tTopic = new ReceiveInformation(list,textAll, socketInformation.getUrl(),socketInformation.getNickname());
 			tTopic.start();
 		} catch (JMSException e1) {
 			// TODO Auto-generated catch block
@@ -227,10 +277,29 @@ public class ChatPrFrame extends JFrame {
 				// TODO Auto-generated catch block
 				ex.printStackTrace();
 			}
+  	  	System.out.println("closeConnection");
   	  	tSocket.stop();
   	  	if(tTopic!=null)
   		  tTopic.stop();
   	 
 	}
 
+
+	public JList getList() {
+		return list;
+	}
+
+
+	public void setList(JList list) {
+		this.list = list;
+	}
+	
+	public void createTabPrivate(String expediteur)
+	{
+		ChatPriveFrame chatprive = new ChatPriveFrame(socketInformation,expediteur,actionHistorique);
+		tSocket.AddPrivateUser(expediteur, chatprive);
+		chatprive.setVisible(true);
+	}
+
+	
 }

@@ -253,7 +253,7 @@ public class LoginFrame extends JFrame {
 	{
 		List<String[]> strings = actionConfiguration.getCSV();
 		List<String> listAddress = new ArrayList<String>();
-		if(listAddress.size()==0)
+		if(strings.size()==0)
 		{
 			actionConfiguration.appendfile(new String[]{"127.0.0.1","80"});
 			strings = actionConfiguration.getCSV();
