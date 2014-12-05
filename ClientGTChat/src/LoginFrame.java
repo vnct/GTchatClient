@@ -98,7 +98,6 @@ public class LoginFrame extends JFrame {
 		for(String st : list)
 		{
 			boxAddr.addItem(st);
-			
 		}
 		/*boxAddr.addItem("127.0.0.1");
 		boxAddr.addItem("192.168.160.152");
@@ -254,6 +253,11 @@ public class LoginFrame extends JFrame {
 	{
 		List<String[]> strings = actionConfiguration.getCSV();
 		List<String> listAddress = new ArrayList<String>();
+		if(listAddress.size()==0)
+		{
+			actionConfiguration.appendfile(new String[]{"127.0.0.1","80"});
+			strings = actionConfiguration.getCSV();
+		}
 		for(String[] st : strings)
 		{
 			try{
