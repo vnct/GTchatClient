@@ -69,7 +69,7 @@ public class LoginFrame extends JFrame {
 		this.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
                   int reponse = JOptionPane.showConfirmDialog(null,
-                                       "Voulez-vous quitter l'application",
+                                       "Do you want quit the application",
                                        "Confirmation",
                                        JOptionPane.YES_NO_OPTION,
                                        JOptionPane.QUESTION_MESSAGE);
@@ -159,84 +159,91 @@ public class LoginFrame extends JFrame {
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				//Password password = new Password(LoginFrame.this);
+				if(getNameUser().equals(""))
+				{
+					JOptionPane.showMessageDialog(null, "Please Specify a username", "Wrong port", JOptionPane.INFORMATION_MESSAGE);
+				}
+				else
+				{
+					
 				
-				SocketInformation socketInformation = null;
-				try {
-					socketInformation = new SocketInformation(new Socket(getIp(), getPort()),getIp());
-					Boolean pseudo_available = true;
-					Boolean done = false;
-					Boolean admin_status = false;
-					while(!done)
-					{
-						try{
-							String nickname = getNameUser();
-							socketInformation.setNickname(nickname);
-							SocketCommunication communication = new SocketCommunication();
-						
-							SocketMessage message = communication.convertStringtoSocketMessage(communication.receiveMessage(socketInformation.getStreamIn()));
-							System.out.println(message.getMessageContent());
-							switch (message.getMessageType()) {
-							case INFO_PSEUDO:
-								communication.sendMessage(new SocketMessage(true,"Serveur", nickname, nickname, SocketMessageType.INFO_PSEUDO), socketInformation.getStreamOut());
-								break;
-							case INFO_PSEUDO_EXIST:
-								pseudo_available = false;
-								done=true;
-								break;
-							case INFO_ADMIN:
-								admin_status = true;
-								done=true;
-								System.out.println("I'm in admin status");
-								//communication.sendMessage(new SocketMessage("Serveur", "ADMIN", nickname, SocketMessageType.INFO_ADMIN), socketInformation.getStreamOut());
-								break;	
-							case INFO_SUCCESS:
-								
-								pseudo_available = true;
-								done=true;
-								break;	
-							default:
-								System.out.println("DEFAULT"  + message.getMessageContent());
-								break;
-							}
-						}
-						catch(IOException ioException)
+				
+					SocketInformation socketInformation = null;
+					try {
+						socketInformation = new SocketInformation(new Socket(getIp(), getPort()),getIp());
+						Boolean pseudo_available = true;
+						Boolean done = false;
+						Boolean admin_status = false;
+						while(!done)
 						{
+							try{
+								String nickname = getNameUser();
+								socketInformation.setNickname(nickname);
+								SocketCommunication communication = new SocketCommunication();
+							
+								SocketMessage message = communication.convertStringtoSocketMessage(communication.receiveMessage(socketInformation.getStreamIn()));
+								System.out.println(message.getMessageContent());
+								switch (message.getMessageType()) {
+								case INFO_PSEUDO:
+									communication.sendMessage(new SocketMessage(true,"Serveur", nickname, nickname, SocketMessageType.INFO_PSEUDO), socketInformation.getStreamOut());
+									break;
+								case INFO_PSEUDO_EXIST:
+									pseudo_available = false;
+									done=true;
+									break;
+								case INFO_ADMIN:
+									admin_status = true;
+									done=true;
+									System.out.println("I'm in admin status");
+									//communication.sendMessage(new SocketMessage("Serveur", "ADMIN", nickname, SocketMessageType.INFO_ADMIN), socketInformation.getStreamOut());
+									break;	
+								case INFO_SUCCESS:
+									
+									pseudo_available = true;
+									done=true;
+									break;	
+								default:
+									System.out.println("DEFAULT"  + message.getMessageContent());
+									break;
+								}
+							}
+							catch(IOException ioException)
+							{
+								
+							}
 							
 						}
+						if(!pseudo_available)
+						{
+							textNickName.setText("");
+						/*	textNickName.setBackground(Color.red);
+							textNickName.setForeground(Color.white);*/
+							JOptionPane.showMessageDialog(null, "Nickname already used", "Nickname", JOptionPane.ERROR_MESSAGE);
+						}
+						else if(admin_status)
+						{
+							Password password = new Password(LoginFrame.this, socketInformation);
+							System.out.println("ADMIN STATUS");
+							password.setVisible(true);
+							setVisible(false);
+						}
+						else
+						{
+							ChatPrFrame chatprframe = new ChatPrFrame(LoginFrame.this, socketInformation);
+							//if (textNickName.getText().equalsIgnoreCase("Admin")){
+							//password.setVisible(true);
+							//}else{Z
+							chatprframe.setVisible(true);
+							setVisible(false);
+						}
+							
 						
+					} catch (IOException e) {
+						JOptionPane.showMessageDialog(null, "Impossible to connect to this server", "Bad Connection", JOptionPane.ERROR_MESSAGE);
 					}
-					if(!pseudo_available)
-					{
-						textNickName.setText("");
-					/*	textNickName.setBackground(Color.red);
-						textNickName.setForeground(Color.white);*/
-						JOptionPane.showMessageDialog(null, "Nickname deja utilisé", "Nickname", JOptionPane.ERROR_MESSAGE);
-					}
-					else if(admin_status)
-					{
-						Password password = new Password(LoginFrame.this, socketInformation);
-						System.out.println("ADMIN STATUS");
-						password.setVisible(true);
-						setVisible(false);
-					}
-					else
-					{
-						ChatPrFrame chatprframe = new ChatPrFrame(LoginFrame.this, socketInformation);
-						//if (textNickName.getText().equalsIgnoreCase("Admin")){
-						//password.setVisible(true);
-						//}else{Z
-						chatprframe.setVisible(true);
-						setVisible(false);
-					}
-						
 					
-				} catch (IOException e) {
-					JOptionPane.showMessageDialog(null, "Impossible to connect to this server", "Bad Connection", JOptionPane.ERROR_MESSAGE);
+				
 				}
-				
-				
-				//}
 			}
 
 		
@@ -311,6 +318,8 @@ public class LoginFrame extends JFrame {
 		}
 		
 		public String getNameUser(){
-			return textNickName.getText();
+			String nickname= textNickName.getText();
+			return nickname;
+			
 		}
 }

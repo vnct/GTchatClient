@@ -38,11 +38,11 @@ public class ChatPriveFrame extends JFrame {
 	
 	
 	private JMenuBar menuBar = new JMenuBar();
-	private JMenu fichier = new JMenu("Fichier");
-	private JMenu edition = new JMenu("Edition");
+	private JMenu fichier = new JMenu("File");
+	private JMenu edition = new JMenu("Edit");
 
-	private JMenuItem item1 = new JMenuItem("Fermer");
-	private JMenuItem item2 = new JMenuItem("A propos...");
+	private JMenuItem item1 = new JMenuItem("Close");
+	private JMenuItem item2 = new JMenuItem("About");
 	
 	private JPanel contentPane = new JPanel();
 	private JScrollPane scrollPane = new JScrollPane();
@@ -96,7 +96,7 @@ public class ChatPriveFrame extends JFrame {
 		this.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
                   int reponse = JOptionPane.showConfirmDialog(null,
-                                       "Voulez-vous fermer cette conversation ?",
+                                       "Do you want close this conversation",
                                        "Confirmation",
                                        JOptionPane.YES_NO_OPTION,
                                        JOptionPane.QUESTION_MESSAGE);

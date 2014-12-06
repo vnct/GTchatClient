@@ -71,12 +71,11 @@ public class ChatPrFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	private JMenuBar menuBar = new JMenuBar();
-	private JMenu fichier = new JMenu("Fichier");
-	private JMenu edition = new JMenu("Edition");
+	private JMenu fichier = new JMenu("File");
+	private JMenu edition = new JMenu("Edit");
 
-	private JMenuItem item1 = new JMenuItem("Deconnection");
-	private JMenuItem item2 = new JMenuItem("A propos...");
-	
+	private JMenuItem item1 = new JMenuItem("Close");
+	private JMenuItem item2 = new JMenuItem("About");
 	
 	
 	private JPanel contentPane = new JPanel();
@@ -127,9 +126,9 @@ public class ChatPrFrame extends JFrame {
 		this.edition.add(item2);
 		item1.addActionListener(new ActionListener(){
 		      public void actionPerformed(ActionEvent arg0) {
-          	  closeConnection();
-          	  dispose();
-                loginframe.disable();  
+	          	  closeConnection();
+	          	  dispose();
+	          	  loginframe.disable();  
 		        }        
 		      });
 		
@@ -383,7 +382,7 @@ public class ChatPrFrame extends JFrame {
 	public void dialogClose()
 	{
 		int reponse = JOptionPane.showConfirmDialog(null,
-                "Voulez-vous vous deconneter ?",
+                "Disconnect ?",
                 "Confirmation",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);

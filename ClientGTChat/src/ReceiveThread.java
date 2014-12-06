@@ -95,7 +95,7 @@ public class ReceiveThread extends Thread {
 								break;
 							case MESSAGE_QUIT:
 								System.out.println("MESSAGE_QUIT");
-								chatPrFrame.dialogServerQuit("Vous êtes déconnecté","");
+								chatPrFrame.dialogServerQuit("You're disconnected","");
 							
 								
 								break;
@@ -110,7 +110,7 @@ public class ReceiveThread extends Thread {
 					// TODO open & close connection to sent a message
 				} catch (IOException e) {
 					done=true;
-					chatPrFrame.dialogServerQuit("Erreur avec le serveur, deconnection en cours...","");
+					chatPrFrame.dialogServerQuit("Server Disconnected, Please restart your application","");
 					
 				} 
 			}
