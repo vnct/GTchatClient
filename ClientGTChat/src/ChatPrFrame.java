@@ -1,6 +1,8 @@
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.TrayIcon.MessageType;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -9,10 +11,12 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.imageio.ImageIO;
 import javax.jms.JMSException;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -49,6 +53,11 @@ import javax.swing.JScrollBar;
 
 
 
+
+
+
+
+
 import com.component.csv.CSVAction;
 import com.irc.socket.SocketCommunication;
 import com.irc.socket.SocketInformation;
@@ -57,6 +66,7 @@ import com.irc.socket.SocketMessageType;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,7 +96,7 @@ public class ChatPrFrame extends JFrame {
 
 	private JTextArea textListPers = new JTextArea();
 	private JTextArea textClient = new JTextArea();
-	private JTextArea textAll = new JTextArea();
+	private MyTextArea textAll = new MyTextArea();
 	private SocketInformation socketInformation = null;
 	private ReceiveThread tSocket = null;
 	private ReceiveInformation tTopic = null;
@@ -147,6 +157,10 @@ public class ChatPrFrame extends JFrame {
             }
 		});
 		
+		ImageIcon icone = new ImageIcon("./Imag/Logo_2.png");
+		this.setIconImage(icone.getImage());
+	
+		
 		// Organiser la JFRAME
 		
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -194,6 +208,26 @@ public class ChatPrFrame extends JFrame {
 		
 		scrollPane.setBounds(5, 5, 298, 178);
 		textAll.setEditable(false);
+		File img=new File("./Imag/Logo.png");
+		
+		//textAll.setOpaque(false);
+
+		
+				//textAll.setOpaque(false);
+		//scrollPane.setBackground(Color.black);
+		//textAll.setBackground();
+		
+		
+		
+        try {
+            Image image = ImageIO.read(img);
+            if (image != null)
+                textAll.setBackgroundImage(image);
+            textAll.repaint();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
 		scrollPane.setViewportView(textAll);
 		
 		contentPane.add(scrollPane);
@@ -228,7 +262,7 @@ public class ChatPrFrame extends JFrame {
 					chatprive.setVisible(true);
 					System.out.println(selected);
 				}else{
-					System.out.println("essaye encore !!!!");
+				//	System.out.println("essaye encore !!!!");
 				}
 				
 				
@@ -393,11 +427,14 @@ public class ChatPrFrame extends JFrame {
 	
 	public void dialogServerQuit(String message,String title)
 	{
-	
+		
 		JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
 		closeAll();
-		this.disable();
-		System.exit(0);
+	//	dispose();
+		//loginframe.disable();  
+		
+		//this.disable();
+		//System.exit(0);
 		
 	}
 	public void closeAll()
@@ -406,12 +443,45 @@ public class ChatPrFrame extends JFrame {
 		dispose();
 		loginframe.disable();  
 		
+		this.disable();
+		
 	}
 	public ChatPrFrame getFrame()
 	{
 		return this;
 	}
 	
+	/**************************************************************************************/
+	static class MyTextArea extends JTextArea {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private Image backgroundImage;
+ 
+        public MyTextArea() {
+            super();
+            setOpaque(false);
+        }
+ 
+        public void setBackgroundImage(Image image) {
+            this.backgroundImage = image;
+            this.repaint();
+        }
+ 
+        @Override
+        protected void paintComponent(Graphics g) {
+            g.setColor(getBackground());
+            g.fillRect(0, 0, getWidth(), getHeight());
+ 
+            if (backgroundImage != null) {
+                g.drawImage(backgroundImage, 0, 0, this);
+            }
+ 
+            super.paintComponent(g);
+        }
+    }
+	/**************************************************************************************/
 	
 	
 

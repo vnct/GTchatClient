@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -72,7 +73,9 @@ public class ChatPriveFrame extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		
-
+		ImageIcon icone = new ImageIcon("./Imag/Logo_2.png");
+		this.setIconImage(icone.getImage());
+	
 		this.fichier.add(item1);
 		this.edition.add(item2);
 		
@@ -168,9 +171,7 @@ public class ChatPriveFrame extends JFrame {
 			}
 			
 			@Override
-			public void keyPressed(KeyEvent e) {
-				
-				
+			public void keyPressed(KeyEvent e) {	
 			}
 		});
 		

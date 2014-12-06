@@ -2,6 +2,7 @@
 import java.awt.Color;
 import java.awt.Dimension;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -58,7 +59,9 @@ public class LoginFrame extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		//contentPane.setBackground(Color.white);
-		
+		ImageIcon icone = new ImageIcon("./Imag/Logo_2.png");
+		this.setIconImage(icone.getImage());
+	
 		actionConfiguration = new CSVAction();
 		actionConfiguration.setFilename("configurationFile");
 		actionConfiguration.setStringsTitleCSV(new String[]{"IP","PORT"});

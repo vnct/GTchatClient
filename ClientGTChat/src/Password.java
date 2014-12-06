@@ -1,3 +1,4 @@
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -8,6 +9,7 @@ import com.irc.socket.SocketCommunication;
 import com.irc.socket.SocketInformation;
 import com.irc.socket.SocketMessage;
 import com.irc.socket.SocketMessageType;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -40,7 +42,9 @@ public class Password extends JFrame {
 		socketInformation = _socketInformation;
 		
 		contentPane.setLayout(null);
-
+		ImageIcon icone = new ImageIcon("./Imag/Logo_2.png");
+		this.setIconImage(icone.getImage());
+	
 		JPanel toptitle = new JPanel();
 		toptitle.setBounds(10, 5, 264, 30);
 		toptitle.setLayout(null);
