@@ -354,7 +354,7 @@ public class ChatPrFrame extends JFrame {
 		}
 		else
 		{
-			textAll.append(socketInformation.getNickname() + " > " + msgToSend+ "\n");
+			textAll.append(socketInformation.getNickname() + ">" + msgToSend+ "\n");
 			
 			
 		}
@@ -362,7 +362,7 @@ public class ChatPrFrame extends JFrame {
 			socketMessage = new SocketMessage(false,"***", msgToSend, socketInformation.getNickname(), type);
 			actionHistorique.appendfile(socketCommunication.convertSocketMessagetoStringTab(socketMessage));
 			socketCommunication.sendMessage(socketMessage, socketInformation.getStreamOut());
-			System.out.println(socketMessage.getMessageType());
+			//System.out.println(socketMessage.getMessageType());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

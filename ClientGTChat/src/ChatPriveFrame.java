@@ -65,7 +65,7 @@ public class ChatPriveFrame extends JFrame {
 		
 		this.setTitle(_dest);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.setBounds(100, 100, 450, 300);
+		this.setBounds(100, 100, 450, 315);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		

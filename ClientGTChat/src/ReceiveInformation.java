@@ -68,7 +68,7 @@ public class ReceiveInformation extends Thread {
 							addStringToChatBox(texte_to_display);
 							break;
 						case USER_LIST:
-							System.out.println(socketMessage.getMessageContent());
+						//	System.out.println(socketMessage.getMessageContent());
 							String[] strings = socketMessage.getMessageContent().split(";");
 							List<String> temp_list = new ArrayList<String>();
 							
@@ -81,7 +81,7 @@ public class ReceiveInformation extends Thread {
 							}
 							String[] temp_list_tab = new String[temp_list.size()];
 							temp_list_tab = temp_list.toArray(temp_list_tab);
-							System.out.println(temp_list_tab.length);
+						//	System.out.println(temp_list_tab.length);
 							updateList(temp_list_tab);
 							break;
 						default:
