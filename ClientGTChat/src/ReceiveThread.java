@@ -125,6 +125,7 @@ public class ReceiveThread extends Thread {
 			public void run() {
 
 				chatPrFrame.getHashMap().get(user).getTextPrive().append(message);
+				chatPrFrame.getHashMap().get(user).getTextPrive().setCaretPosition(chatPrFrame.getHashMap().get(user).getTextPrive().getDocument().getLength());
 			}
 		});
 	}
@@ -136,7 +137,10 @@ public class ReceiveThread extends Thread {
 			@Override
 			public void run() {
 
-				chatBox.append(message);		}
+				chatBox.append(message);
+				chatBox.setCaretPosition(chatBox.getDocument().getLength());
+				
+			}
 		});
 	}
 
