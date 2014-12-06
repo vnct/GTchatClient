@@ -6,7 +6,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -51,18 +53,19 @@ public class ChatPriveFrame extends JFrame {
     private String dest;
     private SocketInformation socketInformation = null;
     private CSVAction csvAction = null;
+    private ChatPrFrame chatPrFrame = null;
 
 
 	/**
 	 * Create the frame.
 	 */
 	
-	public ChatPriveFrame(SocketInformation _socketInformation,String _dest,final CSVAction action) {
+	public ChatPriveFrame(ChatPrFrame _chatPrFrame,SocketInformation _socketInformation,String _dest,final CSVAction action) {
 		
 		socketInformation = _socketInformation;
 		dest = _dest;
 		csvAction= action;
-		
+		chatPrFrame = _chatPrFrame;
 		this.setTitle(_dest);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setBounds(100, 100, 450, 315);
@@ -98,7 +101,21 @@ public class ChatPriveFrame extends JFrame {
                                        JOptionPane.YES_NO_OPTION,
                                        JOptionPane.QUESTION_MESSAGE);
                   if (reponse==JOptionPane.YES_OPTION){
+                	  for(Entry<String, ChatPriveFrame> entry : chatPrFrame.getHashMap().entrySet()) {
+                		    String cle = entry.getKey();
+                	
+                		    // traitements
+                		}
+                	  chatPrFrame.getHashMap().remove(dest);
+                	  System.out.println("Je remove");
+                	  for(Entry<String, ChatPriveFrame> entry : chatPrFrame.getHashMap().entrySet()) {
+              		    String cle = entry.getKey();
+              	
+              		    // traitements
+              		}
                 	  dispose();   
+                	  
+                	  
                   }
             }
 		});
@@ -129,13 +146,9 @@ public class ChatPriveFrame extends JFrame {
 		
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
-				sendMessage();
+					sendMessage();
 				
 			}
-
-
-
 		});
 		
 		textClient.addKeyListener(new KeyListener() {
@@ -177,8 +190,17 @@ public class ChatPriveFrame extends JFrame {
 	public void reloadHistorique(String user)
 	{
 		List<String[]> strings = csvAction.getCSV();
+		List<String[]> strings1 = new ArrayList<String[]>();
+		if(strings.size()>100)
+		{
+			strings1 = strings.subList(strings.size()-100, strings.size());
+		}
+		else
+		{
+			strings1 = strings;
+		}
 		Integer i=0;
-		for(String[] my_line : strings)
+		for(String[] my_line : strings1)
 		{
 			SocketCommunication socketCommunication = new SocketCommunication();
 			SocketMessage socketMessage = socketCommunication.convertStringTabtoSocketMessage(my_line);
@@ -216,7 +238,9 @@ public class ChatPriveFrame extends JFrame {
 		SocketCommunication socketCommunication = new SocketCommunication();
 		SocketMessage socketMessage = null;
 		SocketMessageType type = SocketMessageType.MESSAGE_TEXT;
-		textPrive.append(socketInformation.getNickname() + " > " + msgToSend+ "\n");
+		if(!msgToSend.equals(""))
+			textPrive.append(socketInformation.getNickname() + " > " + msgToSend+ "\n");
+		
 		try {
 			socketMessage = new SocketMessage(true,dest, msgToSend, socketInformation.getNickname(), type);
 			csvAction.appendfile(socketCommunication.convertSocketMessagetoStringTab(socketMessage));

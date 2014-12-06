@@ -79,11 +79,13 @@ public class ReceiveThread extends Thread {
 								{
 									if(chatPrFrame.getHashMap().containsKey(socketMessage.getNicknameExpediteur()))
 									{
+									//	System.out.println("Box exite deja");
 										addStringToPrivateBox(socketMessage.getNicknameExpediteur(),textToDisplay + "\n");
 										
 									}
 									else
 									{
+										//System.out.println("Box créatinon");
 										chatPrFrame.createTabPrivate(socketMessage.getNicknameExpediteur());
 										addStringToPrivateBox(socketMessage.getNicknameExpediteur(),textToDisplay + "\n");
 										
@@ -93,8 +95,8 @@ public class ReceiveThread extends Thread {
 								break;
 							case MESSAGE_QUIT:
 								System.out.println("MESSAGE_QUIT");
-								
-								chatPrFrame.closeConnection();
+								chatPrFrame.dialogServerQuit("Vous êtes déconnecté","");
+							
 								
 								break;
 							default:
@@ -107,8 +109,9 @@ public class ReceiveThread extends Thread {
 							
 					// TODO open & close connection to sent a message
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					done=true;
+					chatPrFrame.dialogServerQuit("Erreur avec le serveur, deconnection en cours...","");
+					
 				} 
 			}
 		}

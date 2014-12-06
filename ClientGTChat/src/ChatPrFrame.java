@@ -1,5 +1,7 @@
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -20,6 +22,10 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.JScrollBar;
+
+
+
+
 
 
 
@@ -92,6 +98,8 @@ public class ChatPrFrame extends JFrame {
 	private JList list = null;
 	
 	private HashMap<String, ChatPriveFrame> hashMap;
+
+	private LoginFrame loginframe;
 	/**
 	 * Create the frame.
 	 */
@@ -100,7 +108,7 @@ public class ChatPrFrame extends JFrame {
 	
 	
 	
-	public ChatPrFrame(final LoginFrame loginframe, SocketInformation _socketInformation) {
+	public ChatPrFrame(final LoginFrame _loginframe, SocketInformation _socketInformation) {
 		socketInformation = _socketInformation;
 		actionHistorique = new CSVAction();
 		actionHistorique.setFilename("historiqueFile");
@@ -108,7 +116,7 @@ public class ChatPrFrame extends JFrame {
 		actionHistorique.createFile();
 	
 		hashMap = new HashMap<String, ChatPriveFrame>();
-		
+		loginframe = _loginframe;
 		this.setTitle("GTChat - " + _socketInformation.getNickname());
 		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setBounds(100, 100, 450, 315);
@@ -136,16 +144,7 @@ public class ChatPrFrame extends JFrame {
 		
 		this.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
-                  int reponse = JOptionPane.showConfirmDialog(null,
-                                       "Voulez-vous vous deconneter ?",
-                                       "Confirmation",
-                                       JOptionPane.YES_NO_OPTION,
-                                       JOptionPane.QUESTION_MESSAGE);
-                  if (reponse==JOptionPane.YES_OPTION){
-                	  closeConnection();
-                	  dispose();
-                	  loginframe.disable();  
-                  }
+            	dialogClose();
             }
 		});
 		
@@ -162,7 +161,7 @@ public class ChatPrFrame extends JFrame {
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				send_msg(loginframe);
+				send_msg();
 			}
 		});
 		textClient.addKeyListener(new KeyListener() {
@@ -176,7 +175,7 @@ public class ChatPrFrame extends JFrame {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
 				if (arg0.getKeyCode() == KeyEvent.VK_ENTER)
-					send_msg(loginframe);
+					send_msg();
 			}
 
 			@Override
@@ -225,7 +224,7 @@ public class ChatPrFrame extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if(e.getClickCount() == 2){
 					String selected = (String) list.getSelectedValue();
-					ChatPriveFrame chatprive = new ChatPriveFrame(socketInformation,selected,actionHistorique);
+					ChatPriveFrame chatprive = new ChatPriveFrame(getFrame(),socketInformation,selected,actionHistorique);
 					tSocket.AddPrivateUser(selected, chatprive);
 					chatprive.setVisible(true);
 					System.out.println(selected);
@@ -271,9 +270,19 @@ public class ChatPrFrame extends JFrame {
 	public void reloadHistorique(String user)
 	{
 		List<String[]> strings = actionHistorique.getCSV();
-		Integer i=0;
-		for(String[] my_line : strings)
+		List<String[]> strings1 = new ArrayList<String[]>();
+		if(strings.size()>100)
 		{
+			strings1 = strings.subList(strings.size()-100, strings.size());
+		}
+		else
+		{
+			strings1 = strings;
+		}
+		Integer i=0;
+		for(String[] my_line : strings1)
+		{
+			
 			SocketCommunication socketCommunication = new SocketCommunication();
 			SocketMessage socketMessage = socketCommunication.convertStringTabtoSocketMessage(my_line);
 			
@@ -305,8 +314,7 @@ public class ChatPrFrame extends JFrame {
 				socketInformation.stop();
 				
 			} catch (IOException ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
+				// TODO : CLOSE
 			}
   	  	System.out.println("closeConnection");
   	  	tSocket.stop();
@@ -327,7 +335,7 @@ public class ChatPrFrame extends JFrame {
 	
 	public void createTabPrivate(String expediteur)
 	{
-		ChatPriveFrame chatprive = new ChatPriveFrame(socketInformation,expediteur,actionHistorique);
+		ChatPriveFrame chatprive = new ChatPriveFrame(this,socketInformation,expediteur,actionHistorique);
 		tSocket.AddPrivateUser(expediteur, chatprive);
 		chatprive.setVisible(true);
 	}
@@ -341,7 +349,7 @@ public class ChatPrFrame extends JFrame {
 	public void setHashMap(HashMap<String, ChatPriveFrame> hashMap) {
 		this.hashMap = hashMap;
 	}
-	private void send_msg(LoginFrame loginframe )
+	private void send_msg( )
 	{
 		String msgToSend = send().replace(">", "").trim();
 		SocketCommunication socketCommunication = new SocketCommunication();
@@ -349,14 +357,14 @@ public class ChatPrFrame extends JFrame {
 		SocketMessageType type = SocketMessageType.MESSAGE_TEXT;
 		if(msgToSend.contains("!kick"))
 		{
-			System.out.println("Changememnt du type");
+			//System.out.println("Changememnt du type");
 			type = SocketMessageType.USER_KICK;
 		}
 		else
 		{
-			textAll.append(socketInformation.getNickname() + ">" + msgToSend+ "\n");
-			
-			
+		//	textAll.append(socketInformation.getNickname() + ">" + msgToSend+ "\n");
+			if(!msgToSend.equals(""))
+				textAll.append(socketInformation.getNickname() + ">" + msgToSend+ "\n");
 		}
 		try {
 			socketMessage = new SocketMessage(false,"***", msgToSend, socketInformation.getNickname(), type);
@@ -365,12 +373,47 @@ public class ChatPrFrame extends JFrame {
 			//System.out.println(socketMessage.getMessageType());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+		//	e.printStackTrace();
 		}
 		
 		textClient.setText("");
 		
 	}
+	
+	public void dialogClose()
+	{
+		int reponse = JOptionPane.showConfirmDialog(null,
+                "Voulez-vous vous deconneter ?",
+                "Confirmation",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+		if (reponse==JOptionPane.YES_OPTION){
+			closeAll();
+		}
+	}
+	
+	public void dialogServerQuit(String message,String title)
+	{
+	
+		JOptionPane.showMessageDialog(null, message, title, JOptionPane.INFORMATION_MESSAGE);
+		closeAll();
+		this.disable();
+		System.exit(0);
+		
+	}
+	public void closeAll()
+	{
+		closeConnection();
+		dispose();
+		loginframe.disable();  
+		
+	}
+	public ChatPrFrame getFrame()
+	{
+		return this;
+	}
+	
+	
 	
 
 	

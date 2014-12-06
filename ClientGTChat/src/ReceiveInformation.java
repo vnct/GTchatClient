@@ -25,7 +25,13 @@ public class ReceiveInformation extends Thread {
 	public ReceiveInformation(ChatPrFrame _chatPrFrame,JList _jlist, JTextArea textAll,String brokerUrl,String _nickname) throws JMSException {
 		String jmsAddress = "tcp://"+brokerUrl+":61616";
 		this.jlist = _jlist;
+		try{
 		messageConsumer = new JMSMessageConsumer(jmsAddress, "TOPIC.TOPIC");
+		}
+		catch(Exception exception)
+		{
+			System.out.println("JMS didn't lauch on server");
+		}
 		this.chatBox = textAll;
 		this.nickname = _nickname;
 		chatPrFrame= _chatPrFrame;
@@ -40,7 +46,7 @@ public class ReceiveInformation extends Thread {
 		while(true)
 		{
 			Boolean done=false;
-			while(!done)
+			while(!done&&messageConsumer!=null)
 			{
 				try {
 				

@@ -98,7 +98,9 @@ public class LoginFrame extends JFrame {
 		for(String st : list)
 		{
 			boxAddr.addItem(st);
+			
 		}
+		textPort.setText(String.valueOf(loadPort(boxAddr.getItemAt(0).toString())));
 		/*boxAddr.addItem("127.0.0.1");
 		boxAddr.addItem("192.168.160.152");
 		boxAddr.addItem("192.168.160.131");*/
@@ -206,7 +208,10 @@ public class LoginFrame extends JFrame {
 					}
 					if(!pseudo_available)
 					{
-						textNickName.setBackground(Color.red);
+						textNickName.setText("");
+					/*	textNickName.setBackground(Color.red);
+						textNickName.setForeground(Color.white);*/
+						JOptionPane.showMessageDialog(null, "Nickname deja utilisé", "Nickname", JOptionPane.ERROR_MESSAGE);
 					}
 					else if(admin_status)
 					{
@@ -227,8 +232,7 @@ public class LoginFrame extends JFrame {
 						
 					
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Impossible to connect to this server", "Bad Connection", JOptionPane.ERROR_MESSAGE);
 				}
 				
 				
@@ -282,7 +286,7 @@ public class LoginFrame extends JFrame {
 			}
 			catch(Exception exception)
 			{
-				
+				JOptionPane.showMessageDialog(null, "Please Specify a good port", "Wrong port", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 		return 0;
@@ -295,7 +299,15 @@ public class LoginFrame extends JFrame {
 		}
 		
 		public int getPort(){
-			return  Integer.parseInt(textPort.getText());
+			Integer port = 0;
+			try{
+				port = Integer.parseInt(textPort.getText());
+			}
+			catch(Exception e)
+			{
+				JOptionPane.showMessageDialog(null, "Please Specify a good port", "Wrong port", JOptionPane.INFORMATION_MESSAGE);
+			}
+			return port; 
 		}
 		
 		public String getNameUser(){
